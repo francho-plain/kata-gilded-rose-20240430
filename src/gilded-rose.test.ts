@@ -1,4 +1,5 @@
-import { GildedRose, Item, MaxQualityValue, MinQualityValue, SpecialItemNames } from "./gilded-rose";
+import { GildedRose, Item,  SpecialItemNames } from "./gilded-rose";
+import { MaxQualityValue, MinQualityValue } from "./quality-tools";
 
 const anyItemName = 'foo';
 
@@ -15,6 +16,7 @@ describe('Gilded Rose', () => {
     ['Backstage passes Quality drops to 0 after the concert', { name: SpecialItemNames.BackstagePasses, sellIn: 0, quality: 2 }, {name: SpecialItemNames.BackstagePasses, sellIn: -1, quality: 0}],
     ['The Quality of an item is never negative', { name: anyItemName, sellIn: 1, quality: MinQualityValue }, {name: anyItemName, sellIn: 0, quality: 0}],
     ['**(not in Readme)Aged Brie actually increases in Quality by 2 when sellIn is negative', { name: SpecialItemNames.AgedBrie, sellIn: -1, quality: 2 }, {name: SpecialItemNames.AgedBrie, sellIn: -2, quality: 4}],
+    ['“Conjured” items degrade in Quality twice as fast as normal items', { name: SpecialItemNames.Conjured, sellIn:-1, quality: 10 }, {name: SpecialItemNames.Conjured, sellIn: -2, quality: 8}],
   ])
   ('%s', (_, actualItem, expectedItem) => {
     const item = new Item(actualItem.name, actualItem.sellIn, actualItem.quality);
