@@ -20,6 +20,10 @@ const removeOneFromQuality = (item: Item) => {
 }
 
 const increaseQuality = (item: Item) => {
+  if (item.name !== SpecialItemNames.AgedBrie && item.name !== SpecialItemNames.BackstagePasses) {
+    return false
+  }
+
   addOneToQuality(item)
 
   if (item.name === SpecialItemNames.AgedBrie && item.sellIn < 1) {
@@ -32,38 +36,37 @@ const increaseQuality = (item: Item) => {
       addOneToQuality(item)
     }
   }
+
+  return true
 }
 
 const decreaseQuality = (item: Item) => {
-  if (item.name === SpecialItemNames.Sulfuras) {
-    return
+  if (item.name === SpecialItemNames.AgedBrie || item.name === SpecialItemNames.BackstagePasses || item.name === SpecialItemNames.Sulfuras) {
+    return false
   }
 
   removeOneFromQuality(item)
   if (item.sellIn < 1 || item.name === SpecialItemNames.Conjured) {
     removeOneFromQuality(item)
   }
+
+  return true
 }
 
 const expireQuality = (item: Item) => {
-  if (item.name === SpecialItemNames.BackstagePasses && item.sellIn < 1) {
-    item.quality = 0;
-    return true
+  if (item.name !== SpecialItemNames.BackstagePasses || item.sellIn >= 1) {
+    return false;
   }
-  return false
+  
+  item.quality = 0;
+  return true;
 }
 
 export const modifyQuality = (i: Item) => {
   const item = {...i}
-  if (expireQuality(item)) { 
-    return item
-  }
 
-  if (item.name === SpecialItemNames.AgedBrie || item.name === SpecialItemNames.BackstagePasses) {
-    increaseQuality(item)
-  } else {
-    decreaseQuality(item);
-  }
+  expireQuality(item) || decreaseQuality(item) || increaseQuality(item)
+
   return item
 }
 
